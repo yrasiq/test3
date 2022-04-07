@@ -2,7 +2,7 @@ import uvicorn, aioredis, asyncpg, random, configparser
 from fastapi import FastAPI
 
 cfg = configparser.ConfigParser()
-cfg.read(".env")
+cfg.read(".cfg")
 cfg_fastapi = cfg["FastAPI"]
 REDIS_HOST = cfg_fastapi.get("REDIS_HOST", "redis://localhost")
 UVICORN_HOST = cfg_fastapi.get("UVICORN_HOST", "0.0.0.0")
@@ -51,7 +51,7 @@ async def is_anagram(str1: str, str2: str):
     if is_anagram:
         counter += 1
         await app.state.redis.set("is_anagram_counter", counter)
-    return {}
+    return {"is_anagram": is_anagram, "counter": counter}
 
 @app.post("/devices/", status_code=201)
 async def post_devices():
